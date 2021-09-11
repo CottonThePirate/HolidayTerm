@@ -1,10 +1,16 @@
 #!/bin/zsh
 # Chris Schaab 2021
 # This script looks a list of holidays, and prints the number of days to
-# the next one in the list. 
+# the next one in the list. If there is a matching ASCII Art file it will
+# display the art 
 #
+#CURRENT ISSUES
+#1. Date command works differently on Linux and MacOS/BSD so this script only works on linux atm
+#2. Filename matching on first word only is a poor choice
+#2.a choice one would be to match on the whole holiday, but many have special characters ( ) * etc
+#2.b Could include a caldenar file with the program, but this makes it less portable
+#2.c Could use first 20 characters of holiday, replaceing any non 0-9a-z chars with _ 
 #
-# #Calendar File 
 
 debug=1
 
@@ -26,35 +32,32 @@ daysToCheck=60
 
 Holidays="$(calendar -A $daysToCheck -f $CalendarFile | tr -d "*" )" 
 
-#debug echo holidays
-
 #echo $Holidays
 
 #go thru our holiday list one by one until we find one with a matching ascii art file
 
 while IFS= read -r line; do
-    	#echo "Text read from file: $line"
+	# The calendar command outputs text in date <tab> Name of holiday \n 
+	# The cut command will split on the tab to seperate the date and the name of the holiday
     DateNum="$(cut -d$'\t' -f 1 <(echo "$line"))"
     DateText="$(cut -d$'\t' -f 2 <(echo "$line"))"
+    	#pick the first word of the holiday for ascii art matching, this should be more robust
     DateFirstWord="$(cut -d$' ' -f 1 <(echo "$DateText"))"
-    DateSec=$(date --date=$DateNum '+%s')
+    	#If there is a file with the same name as the holiday, cat the file
     if test -f "$ArtFilesDir/$DateFirstWord"; then
 	    cat "$ArtFilesDir/$DateFirstWord"
     fi
     
     	#How Many Days until the next Holiday?
+    DateSec=$(date --date=$DateNum '+%s')
     daysToHoliday=$(((DateSec - today)/86400))
     echo "$DateText is $daysToHoliday days away"
 done < <(printf '%s\n' "$Holidays")
 
 
 
-#July4th=$(date --date=$July4th '+%s')
 
-
-
-
-
+#Old cruft from when I was trying to use bash "dictionaries" 
 
 #for key val in "${(@kv)holidays}"; do
 #    echo "$key -> $val"
