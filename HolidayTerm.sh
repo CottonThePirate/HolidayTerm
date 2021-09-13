@@ -5,7 +5,6 @@
 # display the art 
 #
 #CURRENT ISSUES
-#1. Date command works differently on Linux and MacOS/BSD so this script only works on linux atm
 #2. Filename matching on first word only is a poor choice
 #2.a choice one would be to match on the whole holiday, but many have special characters ( ) * etc
 #2.b Could include a calendar file with the program, but this makes it less portable
@@ -48,9 +47,7 @@ while IFS= read -r line; do
 	    cat "$ArtFilesDir/$DateFirstWord"
     fi
     
-    #zsh date notes strftime -r "%Y %m %d" "2022 02 11" provides sec from epoch of date
     	#How Many Days until the next Holiday?
-    #DateSec=$(date --date=$DateNum '+%s')
     DateSec="$(strftime -r "%Y %b %d" "2021 $DateNum" )"
     daysToHoliday=$(((DateSec - today)/86400))
     echo "$DateText is $daysToHoliday days away"
