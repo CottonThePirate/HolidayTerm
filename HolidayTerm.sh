@@ -1,25 +1,22 @@
 #!/bin/zsh
-# Chris Schaab 2021
+# Copyright Chris Schaab 2021  GPLv3
 # This script looks a list of holidays, and prints the number of days to
 # the next one in the list. If there is a matching ASCII Art file it will
 # display the art 
 #
 #CURRENT ISSUES
-#2. Filename matching on first word only is a poor choice
-#2.a choice one would be to match on the whole holiday, but many have special characters ( ) * etc
-#2.b Could include a calendar file with the program, but this makes it less portable
-#2.c Could use first 20 characters of holiday, replaceing any non 0-9a-z chars with _ 
 #
+
+#zsh Module datetime provides portable date math and other useful items
 zmodload zsh/datetime
-debug=1
 
 #File to be used for holiday calculation, must be in the format for the calendar command
 CalendarFile="/usr/share/calendar/calendar.usholiday"
 ArtFilesDir="./holidayArt"
 
 
-# Store todays date in seconds (unix time) in today zsh has a built in command for this! 
-today="$(print -P "%D{%s}")"
+# Store todays date in seconds (unix time) zsh/datetime provides as EPOCHSECONDS
+today=$EPOCHSECONDS
 
 
 #Assign Holidays the next 60 days worth of holidays from CalendarFile, more days takes longer due to the
@@ -40,15 +37,20 @@ while IFS= read -r line; do
 	# The cut command will split on the tab to seperate the date and the name of the holiday
     DateNum="$(cut -d$'\t' -f 1 <(echo "$line"))"
     DateText="$(cut -d$'\t' -f 2 <(echo "$line"))"
+    
+    	#Set the artfile to look for name to on alpha numeric chars (no special or spaces)
+    ArtFile=${DateText//[^[:alnum:]-]/_}
+    
     	#pick the first word of the holiday for ascii art matching, this should be more robust
     DateFirstWord="$(cut -d$' ' -f 1 <(echo "$DateText"))"
     	#If there is a file with the same name as the holiday, cat the file
-    if test -f "$ArtFilesDir/$DateFirstWord"; then
-	    cat "$ArtFilesDir/$DateFirstWord"
+    if test -f "$ArtFilesDir/$ArtFile"; then
+	    cat "$ArtFilesDir/$ArtFile"
     fi
     
     	#How Many Days until the next Holiday?
-    DateSec="$(strftime -r "%Y %b %d" "2021 $DateNum" )"
+	#send errors to the bit bucket because sometimes the date slightly mismatches
+    DateSec="$(strftime -r "%Y %b %d" "2021 $DateNum" )" &>/dev/null
     daysToHoliday=$(((DateSec - today)/86400))
     echo "$DateText is $daysToHoliday days away"
 done < <(printf '%s\n' "$Holidays")
