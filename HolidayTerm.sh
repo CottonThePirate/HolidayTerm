@@ -6,6 +6,7 @@
 #
 #CURRENT ISSUES
 # year rollover, year hardcoded to 2021
+# calendar returns unreliable results on macOS for 365 days (used for looking at filenames)
 
 #zparseopts -A -D 
 
@@ -39,8 +40,6 @@ fi
 ###############
 
 
-
-
 #zsh Module datetime provides portable date math and other useful items
 zmodload zsh/datetime
 
@@ -50,9 +49,6 @@ today=$EPOCHSECONDS
 thisYear="strftime %Y $today"
 # are we close to a year boundry? 
 # TODO Add next year detection/calculation for days until holiday
-
-
-
 
 
 #use tr -d to trim out the * used to designate a holiday without a fixed date (ie 3rd tuesday of march) 
