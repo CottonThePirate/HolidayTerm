@@ -5,7 +5,7 @@
 # display the art 
 #
 #CURRENT ISSUES
-#
+# year rollover, year hardcoded to 2021
 
 #zparseopts -A -D 
 
@@ -24,11 +24,11 @@ artsToDisplay=1
 artsDisplayed=0
 #
 #
-#Assign Holidays the next 60 days worth of holidays from CalendarFile, more days takes longer due to the
+#Assign Holidays the next 35 days worth of holidays from CalendarFile, more days takes longer due to the
 #many calls to the "date" program to do date math, this is fine on a real computer, but a raspberry pi it will add like 750ms to login
 
 if test "$FileNameCheckMode" -eq 0; then
-	daysToCheck=60
+	daysToCheck=35
 else
         daysToCheck=365
 fi
