@@ -46,6 +46,13 @@ zmodload zsh/datetime
 
 # Store todays date in seconds (unix time) zsh/datetime provides as EPOCHSECONDS
 today=$EPOCHSECONDS
+# Get the year as a 4 digit number into thisYear
+thisYear="strftime %Y $today"
+# are we close to a year boundry? 
+# TODO Add next year detection/calculation for days until holiday
+
+
+
 
 
 #use tr -d to trim out the * used to designate a holiday without a fixed date (ie 3rd tuesday of march) 
@@ -80,7 +87,7 @@ while IFS= read -r line; do
     fi
     		#How Many Days until the next Holiday?
 		#send errors to the bit bucket because sometimes the date slightly mismatches
-    	DateSec="$(strftime -r "%Y %b %d" "2021 $DateNum" )" &>/dev/null
+    	DateSec="$(strftime -r "%Y %b %d" "$thisYear $DateNum" )" &>/dev/null
     	daysToHoliday=$(((DateSec - today)/86400))
     	echo "$DateText is $daysToHoliday days away"
     
