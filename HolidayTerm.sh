@@ -46,7 +46,7 @@ zmodload zsh/datetime
 # Store todays date in seconds (unix time) zsh/datetime provides as EPOCHSECONDS
 today=$EPOCHSECONDS
 # Get the year as a 4 digit number into thisYear
-thisYear="strftime %Y $today"
+thisYear=`strftime %Y $today`
 # are we close to a year boundry? 
 # TODO Add next year detection/calculation for days until holiday
 
