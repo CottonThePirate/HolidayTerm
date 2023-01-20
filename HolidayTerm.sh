@@ -5,7 +5,6 @@
 # display the art 
 #
 #CURRENT ISSUES
-# year rollover, year hardcoded to 2021
 # calendar returns unreliable results on macOS for 365 days (used for looking at filenames)
 
 #zparseopts -A -D 
